@@ -3,8 +3,9 @@
 
 # %%
 import warnings
-warnings.filterwarnings('ignore')
-warnings.simplefilter('ignore')
+
+warnings.filterwarnings("ignore")
+warnings.simplefilter("ignore")
 
 # %%
 import pandas as pd
@@ -18,24 +19,24 @@ from sklearn.cluster import MiniBatchKMeans
 from sklearn.cluster import KMeans
 
 # %%
-pd.set_option('display.max_columns', 700)
-pd.set_option('display.max_rows', 400)
-pd.set_option('display.min_rows', 10)
-pd.set_option('display.expand_frame_repr', True)
+pd.set_option("display.max_columns", 700)
+pd.set_option("display.max_rows", 400)
+pd.set_option("display.min_rows", 10)
+pd.set_option("display.expand_frame_repr", True)
 
 # %%
-#specify data path
+# specify data path
 
-data = Path.cwd() / 'data' 
+data = Path.cwd() / "data"
 
-ch3 = data / 'chapter_3'
-banksim_file = ch3 / 'banksim.csv'
-banksim_adj_file = ch3 / 'banksim_adj.csv'
-db_full_file = ch3 / 'db_full.pickle'
-labels_file = ch3 / 'labels.pickle'
-labels_full_file = ch3 / 'labels_full.pickle'
-x_scaled_file = ch3 / 'x_scaled.pickle'
-x_scaled_full_file = ch3 / 'x_scaled_full.pickle'
+ch3 = data / "chapter_3"
+banksim_file = ch3 / "banksim.csv"
+banksim_adj_file = ch3 / "banksim_adj.csv"
+db_full_file = ch3 / "db_full.pickle"
+labels_file = ch3 / "labels.pickle"
+labels_full_file = ch3 / "labels_full.pickle"
+x_scaled_file = ch3 / "x_scaled.pickle"
+x_scaled_full_file = ch3 / "x_scaled_full.pickle"
 
 
 # %% [markdown]
@@ -44,9 +45,9 @@ x_scaled_full_file = ch3 / 'x_scaled_full.pickle'
 # %%
 
 banksim_df = pd.read_csv(banksim_file)
-banksim_df.drop(['Unnamed: 0'], axis=1, inplace=True)
+banksim_df.drop(["Unnamed: 0"], axis=1, inplace=True)
 banksim_adj_df = pd.read_csv(banksim_adj_file)
-banksim_adj_df.drop(['Unnamed: 0'], axis=1, inplace=True)
+banksim_adj_df.drop(["Unnamed: 0"], axis=1, inplace=True)
 
 
 # %%
@@ -63,19 +64,19 @@ banksim_adj_df.head()
 
 # %%
 # Group the data by transaction category and take the mean of the data.
-#banksim_df.groupby(['category']).mean()
+# banksim_df.groupby(['category']).mean()
 
-#expected result: the majority of fraud is observed in travel, leisure and sports related transactions.
+# expected result: the majority of fraud is observed in travel, leisure and sports related transactions.
 
 # %%
-#Group the dataframe df by the category age and get the means for each age group.
+# Group the dataframe df by the category age and get the means for each age group.
 
-#banksim_df.groupby(['age']).mean()
+# banksim_df.groupby(['age']).mean()
 
 # %%
 # Count the values of each age group.
 
-#banksim_df.age.value_counts()
+# banksim_df.age.value_counts()
 
 # No, the age groups who are the largest are relatively similar.
 
@@ -83,15 +84,15 @@ banksim_adj_df.head()
 # ###  investigate the average amounts spent in normal transactions versus fraud transactions. This gives you an idea of how fraudulent transactions differ structurally from normal transactions.
 
 # %%
-# Create two dataframes with fraud and non-fraud data 
-df_fraud = banksim_df[banksim_df.fraud == 1] 
+# Create two dataframes with fraud and non-fraud data
+df_fraud = banksim_df[banksim_df.fraud == 1]
 df_non_fraud = banksim_df[banksim_df.fraud == 0]
 
 # %%
-# Plot histograms of the amounts in fraud and non-fraud data 
-plt.hist(df_fraud.amount, alpha=0.5, label='fraud')
-plt.hist(df_non_fraud.amount, alpha=0.5, label='nonfraud')
-plt.xlabel('amount')
+# Plot histograms of the amounts in fraud and non-fraud data
+plt.hist(df_fraud.amount, alpha=0.5, label="fraud")
+plt.hist(df_non_fraud.amount, alpha=0.5, label="nonfraud")
+plt.xlabel("amount")
 plt.legend()
 plt.show()
 
@@ -107,10 +108,25 @@ labels = banksim_adj_df.fraud
 
 # %%
 # Transform your dataframe df into a numpy array X
-cols = ['age', 'amount', 'M', 'es_barsandrestaurants', 'es_contents',
-        'es_fashion', 'es_food', 'es_health', 'es_home', 'es_hotelservices',
-        'es_hyper', 'es_leisure', 'es_otherservices', 'es_sportsandtoys',
-        'es_tech', 'es_transportation', 'es_travel']
+cols = [
+    "age",
+    "amount",
+    "M",
+    "es_barsandrestaurants",
+    "es_contents",
+    "es_fashion",
+    "es_food",
+    "es_health",
+    "es_home",
+    "es_hotelservices",
+    "es_hyper",
+    "es_leisure",
+    "es_otherservices",
+    "es_sportsandtoys",
+    "es_tech",
+    "es_transportation",
+    "es_travel",
+]
 
 # %%
 # Make sure the values are float
@@ -128,7 +144,7 @@ X_scaled = scaler.fit_transform(X)
 # ### K-MEANS CLUSTERING
 
 # %%
-# Define the model 
+# Define the model
 kmeans = MiniBatchKMeans(n_clusters=8, random_state=0)
 
 # %%
@@ -149,11 +165,11 @@ kmeans = [MiniBatchKMeans(n_clusters=i) for i in clustno]
 score = [kmeans[i].fit(X_scaled).score(X_scaled) for i in range(len(kmeans))]
 
 # %%
-# Plot the models and their respective score 
+# Plot the models and their respective score
 plt.plot(clustno, score)
-plt.xlabel('Number of Clusters')
-plt.ylabel('Score')
-plt.title('Elbow Curve')
+plt.xlabel("Number of Clusters")
+plt.ylabel("Score")
+plt.title("Elbow Curve")
 plt.show()
 
 # %% [markdown]
@@ -167,17 +183,22 @@ plt.show()
 from sklearn.model_selection import train_test_split
 
 
-X_train, X_test, y_train, y_test = train_test_split(X_scaled, labels, test_size=0.3, random_state=0)
+X_train, X_test, y_train, y_test = train_test_split(
+    X_scaled, labels, test_size=0.3, random_state=0
+)
 
-# Define K-means model 
+# Define K-means model
 kmeans = MiniBatchKMeans(n_clusters=3, random_state=42).fit(X_train)
 
 # Obtain predictions and calculate distance from cluster centroid
 X_test_clusters = kmeans.predict(X_test)
 X_test_clusters_centers = kmeans.cluster_centers_
-dist = [np.linalg.norm(x-y) for x, y in zip(X_test, X_test_clusters_centers[X_test_clusters])]
+dist = [
+    np.linalg.norm(x - y)
+    for x, y in zip(X_test, X_test_clusters_centers[X_test_clusters])
+]
 
-# Create fraud predictions based on outliers on clusters 
+# Create fraud predictions based on outliers on clusters
 km_y_pred = np.array(dist)
 km_y_pred[dist >= np.percentile(dist, 95)] = 1
 km_y_pred[dist < np.percentile(dist, 95)] = 0
@@ -191,37 +212,44 @@ km_y_pred[dist < np.percentile(dist, 95)] = 0
 from itertools import product
 
 
-def plot_confusion_matrix(cm, classes=['Not Fraud', 'Fraud'],
-                          normalize=False,
-                          title='Fraud Confusion matrix',
-                          cmap=plt.cm.Blues):
-
+def plot_confusion_matrix(
+    cm,
+    classes=["Not Fraud", "Fraud"],
+    normalize=False,
+    title="Fraud Confusion matrix",
+    cmap=plt.cm.Blues,
+):
     if normalize:
-        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        cm = cm.astype("float") / cm.sum(axis=1)[:, np.newaxis]
         print("Normalized confusion matrix")
     else:
-        print('Confusion matrix, without normalization')
+        print("Confusion matrix, without normalization")
 
     # print(cm)
 
-    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.imshow(cm, interpolation="nearest", cmap=cmap)
     plt.title(title)
     plt.colorbar()
     tick_marks = np.arange(len(classes))
     plt.xticks(tick_marks, classes, rotation=45)
     plt.yticks(tick_marks, classes)
 
-    fmt = '.2f' if normalize else 'd'
-    thresh = cm.max() / 2.
+    fmt = ".2f" if normalize else "d"
+    thresh = cm.max() / 2.0
     for i, j in product(range(cm.shape[0]), range(cm.shape[1])):
-        plt.text(j, i, format(cm[i, j], fmt),
-                 horizontalalignment="center",
-                 color="white" if cm[i, j] > thresh else "black")
+        plt.text(
+            j,
+            i,
+            format(cm[i, j], fmt),
+            horizontalalignment="center",
+            color="white" if cm[i, j] > thresh else "black",
+        )
 
     plt.tight_layout()
-    plt.ylabel('True label')
-    plt.xlabel('Predicted label')
+    plt.ylabel("True label")
+    plt.xlabel("Predicted label")
     plt.show()
+
 
 # %%
 # Obtain the ROC score
@@ -237,7 +265,7 @@ from sklearn.metrics import confusion_matrix
 
 km_cm = confusion_matrix(y_test, km_y_pred)
 
-# Plot the confusion matrix in a figure to visualize results 
+# Plot the confusion matrix in a figure to visualize results
 plot_confusion_matrix(km_cm)
 
 # %% [markdown]
@@ -247,10 +275,7 @@ plot_confusion_matrix(km_cm)
 import pickle
 
 # open a file, where you ant to store the data
-filename = open('fraud_detector.pkl', 'wb')
+filename = open("fraud_detector.pkl", "wb")
 
 # dump information to that file
-pickle.dump(kmeans,filename)
-
-
-
+pickle.dump(kmeans, filename)
